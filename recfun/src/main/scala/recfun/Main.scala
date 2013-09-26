@@ -1,6 +1,5 @@
 package recfun
 import common._
-import scala.collection.mutable
 
 object Main {
   def main(args: Array[String]) {
@@ -10,24 +9,23 @@ object Main {
         print(pascal(col, row) + " ")
       println()
     }
-    
     println()
+    
     println("Balance Parens")
     println("(just an) example 1 "+ balance("(just an) example 1".toList))
     println("just an) example 2 "+ balance("just an) example 2".toList))
     println("(just an example 3 "+ balance("(just an example 3".toList))
     println("just an example 4 "+ balance("just an example 4".toList))
     println(")just an( example 5 "+ balance(")just an( example 5".toList))
-  
-    
     println()
+    
     println("Count Change")
-    println("countChange(10, List(1,2,3)) "+ countChange(10, List(1,2,3)))
-    println("countChange(2, List(1,2)) "+ countChange(2, List(1,2)))
-    println("countChange(4, List(1,2)) "+ countChange(4, List(1,2)))
-    println("countChange(1, List(2)) "+ countChange(1, List(2)))
-    println("countChange(0, List(1,2,3)) "+ countChange(0, List(1,2,3)))
-    println("countChange(4, List()) "+ countChange(4, List()))
+    println("countChange(10, List(1,2,3)) = "+ countChange(10, List(1,2,3)))
+    println("countChange(2, List(1,2)) = "+ countChange(2, List(1,2)))
+    println("countChange(4, List(1,2)) = "+ countChange(4, List(1,2)))
+    println("countChange(1, List(2)) = "+ countChange(1, List(2)))
+    println("countChange(0, List(1,2,3)) = "+ countChange(0, List(1,2,3))) // not sure what answer should be. 1 or 0?
+    println("countChange(4, List()) = "+ countChange(4, List()))
   }
 
   /**
@@ -85,7 +83,7 @@ object Main {
    */
   def countChange(money: Int, coins: List[Int]): Int = {
     def countChangeAccum(money: Int, coins: List[Int], total: Int): Int = {
-	    if (money == 0) // we ran out of money
+	    if (money == 0) // we exactly ran out of money so increment our total
 	      total+1
 	    else if (!coins.isEmpty && money > 0)
 	      countChangeAccum(money, coins.tail, total) + countChangeAccum(money - coins.head, coins, total)
