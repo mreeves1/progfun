@@ -10,6 +10,24 @@ object Main {
         print(pascal(col, row) + " ")
       println()
     }
+    
+    println()
+    println("Balance Parens")
+    println("(just an) example 1 "+ balance("(just an) example 1".toList))
+    println("just an) example 2 "+ balance("just an) example 2".toList))
+    println("(just an example 3 "+ balance("(just an example 3".toList))
+    println("just an example 4 "+ balance("just an example 4".toList))
+    println(")just an( example 5 "+ balance(")just an( example 5".toList))
+  
+    
+    println()
+    println("Count Change")
+    println("countChange(10, List(1,2,3)) "+ countChange(10, List(1,2,3)))
+    println("countChange(2, List(1,2)) "+ countChange(2, List(1,2)))
+    println("countChange(4, List(1,2)) "+ countChange(4, List(1,2)))
+    println("countChange(1, List(2)) "+ countChange(1, List(2)))
+    println("countChange(0, List(1,2,3)) "+ countChange(0, List(1,2,3)))
+    println("countChange(4, List()) "+ countChange(4, List()))
   }
 
   /**
@@ -34,57 +52,46 @@ object Main {
       pascal(c-1, r-1) + pascal(c, r-1)
   }
   
-  def pascalCrap(c: Int, r: Int): Int = {
-    def findNextRowValues(previousRow: List[Int], finalRow: Int): List[Int] = {
-      val nextRow = List()
-      for (x <- 0 to previousRow.length + 1) {
-        println("x is "+x)
-        if (x == 0) {
-          println("figuring out col "+(x+1)); 
-          nextRow :+ 1
-        }
-        else if (x == previousRow.length) {
-          println("figuring out col "+(x+1));
-          // val nextRow: scala.mutable.Seq = nextRow :+ 1
-          nextRow :+ 1
-        }
-        else {
-          println("figuring out col "+(x+1)); ; 
-          nextRow :+ (previousRow.apply(x-1) + previousRow.apply(x))
-        }
-      }
-      // take advantage that length of row corresponds with row number
-      if (nextRow.length == finalRow+1) {
-        println("returning nextRow. It's "+ nextRow)
-        return nextRow
-      } else {
-        println("nextRow is "+ nextRow)
-        findNextRowValues(nextRow, finalRow)
-      }
-    }
-    println("figuring out row "+(r+1));   
-    if (r == 0) { // first row is simply 1
-      if (c > 0) {
-        // TODO: Throw error
-      }
-      return 1;
-    }
-    else {
-      val finalRow = findNextRowValues(List(1),r);
-      println("finalRow is:"+finalRow)
-      
-      
-      return finalRow.apply(c);
-    }
-  }
-
   /**
    * Exercise 2
    */
-  //def balance(chars: List[Char]): Boolean = ???
-
+  def balance(chars: List[Char]): Boolean = {
+    
+    def countParens(lCnt: Int, rCnt: Int, charsTail: List[Char]): Boolean = {
+      if (charsTail.isEmpty) {
+        if (lCnt == rCnt)
+          // Unknown case: If we have 0 parens is that still balanced?
+          // if (lCnt == 0 && rCnt == 0) // yes, "&& rCnt == 0" is redundant
+          //  false
+          true   
+        else
+          false
+      } else {
+        if (rCnt > lCnt) // unbalanced case
+          false
+        else if (charsTail.head.toString == "(") 
+          countParens(lCnt + 1, rCnt, charsTail.tail)
+        else if (charsTail.head.toString == ")") 
+          countParens(lCnt, rCnt + 1, charsTail.tail)
+        else 
+          countParens(lCnt, rCnt, charsTail.tail)
+      }
+    }
+    countParens(0, 0, chars)
+  }
+ 
   /**
    * Exercise 3
    */
-  //def countChange(money: Int, coins: List[Int]): Int = ???
+  def countChange(money: Int, coins: List[Int]): Int = {
+    def countChangeAccum(money: Int, coins: List[Int], total: Int): Int = {
+	    if (money == 0) // we ran out of money
+	      total+1
+	    else if (!coins.isEmpty && money > 0)
+	      countChangeAccum(money, coins.tail, total) + countChangeAccum(money - coins.head, coins, total)
+	    else
+	      0
+    }
+    countChangeAccum(money, coins, 0)
+  }
 }
