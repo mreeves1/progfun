@@ -113,7 +113,7 @@ class FunSetSuite extends FunSuite {
     }
   }
   
-    test("intersect contains elements in common") {
+  test("intersect contains elements in common") {
     new TestSets {
       val u1 = union(s1, s2)
       val u2 = union(s2, s3)
@@ -125,4 +125,20 @@ class FunSetSuite extends FunSuite {
       assert(contains(i3, 1), "1 is in an intersect of 1 and 2")
     }
   }
+    
+  test("filter tests") {
+    new TestSets {
+      def p1(x: Int) = (x % 2 == 0) // even numbers
+      def p2(x: Int) = (x % 2 != 0) // odd numbers
+      val f1 = filter(s1, p1)
+      val f2 = filter(s1, p2)
+      val f3 = filter(s2, p1)
+      val f4 = filter(s2, p2)
+      assert(!contains(f1, 1), "1 is not in a set of 1 filtered by even numbers")
+      assert(contains(f2, 1), "1 is in a set of 1 filtered by odd numbers")
+      assert(contains(f3, 2), "2 is in a set of 2 filtered by even numbers")
+      assert(!contains(f4, 2), "2 is not in a set of 2 filtered by odd numbers")
+    }
+  }
+  
 }
