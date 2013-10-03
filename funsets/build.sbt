@@ -10,6 +10,9 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "1.9.1" % "test"
 
 libraryDependencies += "junit" % "junit" % "4.10" % "test"
 
+// set the initial commands when entering 'console' or 'consoleQuick', but not 'consoleProject'
+initialCommands in console := "import funsets._"
+
 // This setting defines the project to which a solution is submitted. When creating a
 // handout, the 'createHandout' task will make sure that its value is correct.
 submitProjectName := "funsets"

@@ -55,24 +55,31 @@ object FunSets {
    */
   def forall(s: Set, p: Int => Boolean): Boolean = {
     def iter(a: Int): Boolean = {
-      if (???) ???
-      else if (???) ???
-      else iter(???)
+      if (a > bound) true // final case
+      else if (contains(s, a) && !contains(p, a)) false // is in set but not in predicate
+      else iter(a + 1)
     }
-    iter(???)
+    iter(-1 * bound) // start at bottom bound
   }
+  
 
   /**
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-  def exists(s: Set, p: Int => Boolean): Boolean = ???
+  def exists(s: Set, p: Int => Boolean): Boolean = forall(p, s) // A predicate is merely another set so just reverse the args?
 
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: Set, f: Int => Int): Set = ???
-
+  // def map(s: Set, f: Int => Int): Set = (y: Int) => (x: Int => g(if (exists(s, x) )))
+  def map(s: Set, f: Int => Int): Set = (y: Int) => (exists(s, ((x: Int) => (y == f(x))))) 
+        
+    
+  
+  
+    //exists(f(x)   exists(s, f(x)) 
+  
   /**
    * Displays the contents of a set
    */
