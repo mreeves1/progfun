@@ -76,9 +76,9 @@ object FunSets {
     iter(-1 * bound) // start at bottom bound
   }
 
-  // TODO: See if there is a one liner for this...
-  // if forall is true, exists is true, if forall is false, exists can be true OR false
-  def exists2(s: Set, p: Int => Boolean) : Boolean = !forall(p, s) // wrong!
+  // One liner version! 
+  // Hack! Not sure of another way to test for empty set
+  def exists2(s: Set, p: Int => Boolean) : Boolean = (if (toString(intersect(s, p)) == ("{}")) {false} else {printSet(intersect(s, p));true;})
 
   
   /**
