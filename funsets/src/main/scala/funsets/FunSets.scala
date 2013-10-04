@@ -67,18 +67,25 @@ object FunSets {
    * Returns whether there exists a bounded integer within `s`
    * that satisfies `p`.
    */
-  def exists(s: Set, p: Int => Boolean): Boolean = forall(p, s) // A predicate is merely another set so just reverse the args?
+  def exists(s: Set, p: Int => Boolean): Boolean = {
+    def iter(a: Int): Boolean = {
+      if (a > bound) false // final case
+      else if (contains(s, a) && contains(p, a)) true
+      else iter(a + 1)
+    }
+    iter(-1 * bound) // start at bottom bound
+  }
 
+  // TODO: See if there is a one liner for this...
+  // if forall is true, exists is true, if forall is false, exists can be true OR false
+  def exists2(s: Set, p: Int => Boolean) : Boolean = !forall(p, s) // wrong!
+
+  
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  // def map(s: Set, f: Int => Int): Set = (y: Int) => (x: Int => g(if (exists(s, x) )))
   def map(s: Set, f: Int => Int): Set = (y: Int) => (exists(s, ((x: Int) => (y == f(x))))) 
-        
-    
-  
-  
-    //exists(f(x)   exists(s, f(x)) 
+
   
   /**
    * Displays the contents of a set
