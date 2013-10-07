@@ -78,7 +78,7 @@ object FunSets {
 
   // One liner version! 
   // Hack! Not sure of another way to test for empty set
-  def exists2(s: Set, p: Int => Boolean) : Boolean = (if (toString(intersect(s, p)) == ("{}")) {false} else {printSet(intersect(s, p));true;})
+  def exists2(s: Set, p: Int => Boolean) : Boolean = (if (toString(intersect(s, p)) == ("{}")) {false} else {/* printSet(intersect(s, p)); //debug */true;})
 
   
   /**
