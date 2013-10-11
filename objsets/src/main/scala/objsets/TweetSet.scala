@@ -66,7 +66,7 @@ abstract class TweetSet {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def mostRetweeted: Tweet = ???
+  def mostRetweeted: Tweet
 
   /**
    * Returns a list containing all tweets of this set, sorted by retweet count
@@ -77,7 +77,7 @@ abstract class TweetSet {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  def descendingByRetweet: TweetList = ???
+  def descendingByRetweet: TweetList
 
 
   /**
@@ -109,6 +109,10 @@ abstract class TweetSet {
 }
 
 class Empty extends TweetSet {
+  def isEmpty: Boolean = {
+    true
+  }
+  
   def filter(p: Tweet => Boolean): TweetSet = new Empty()
 
   
@@ -118,6 +122,16 @@ class Empty extends TweetSet {
 
   def union(that: TweetSet): TweetSet = {
     that
+  }
+  
+  def mostRetweeted: Tweet = {
+    new Tweet("", "", 0)
+    // throw new java.util.NoSuchElementException("Empty tweet set has no members ")
+    
+  }
+  
+  def descendingByRetweet: TweetList = {
+    Nil
   }
   
   
@@ -137,7 +151,10 @@ class Empty extends TweetSet {
 }
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
-
+  def isEmpty: Boolean = {
+    false
+  }
+  
   def filter(p: Tweet => Boolean): TweetSet = filterAcc(p, new Empty())
   
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = {
@@ -154,7 +171,24 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     // remove from this and add to that so empty returns that at end?
     right.union(left.union(that.incl(elem))) 
   }
-
+  
+  def mostRetweeted: Tweet = {
+    val tmpMost1 = elem
+    val tmpMost2 = left.mostRetweeted
+    val tmpMost3 = right.mostRetweeted
+    if (tmpMost1.retweets > tmpMost2.retweets && tmpMost1.retweets > tmpMost3.retweets) {
+      tmpMost1
+    } else if (tmpMost2.retweets > tmpMost3.retweets && tmpMost2.retweets > tmpMost1.retweets) {
+      tmpMost2
+    } else {
+      tmpMost3
+    }
+  }
+    
+  def descendingByRetweet: TweetList = {
+    val most1 = this.mostRetweeted;
+    new Cons(most1,this.remove(most1).descendingByRetweet)
+  }
 
   /**
    * The following methods are already implemented
@@ -210,9 +244,23 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
-
+  // lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(tweet => tweet.text.contains(google))
+  // lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(tweet => tweet.retweets > 20)
+  // lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(tweet => tweet.text.contains("Carbon))
+  lazy val googleTweets: TweetSet = TweetReader.allTweets.filter(tweet => chkWords(tweet.text, google))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets.filter(tweet => chkWords(tweet.text, apple))
+  
+  def chkWords(text: String, list: List[String]): Boolean = {
+    for (word <- list) {
+      if (text.contains(word)) {
+        return true
+      }
+    }
+    false
+    
+  }
+  
+  
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
@@ -224,18 +272,24 @@ object Main extends App {
   val tweetSet1 = new Empty()
   val tweet1 = new Tweet("mike", "Hello Ocean", 5)
   val tweet2 = new Tweet("mike", "Hello Asteroid", 20)
-  val tweet3 = new Tweet("mike", "Hello Trees", 10)
+  val tweet3 = new Tweet("mike", "Hello Trees", 30)
   
   val tweetSet2 = tweetSet1.incl(tweet1)
   val tweetSet3 = tweetSet2.incl(tweet2)
   val tweetSet4 = tweetSet3.incl(tweet3)
   
-  println("tweetSet4 results ******")
-  tweetSet4 foreach println
+  // println("tweetSet4 results ******")
+  // tweetSet4 foreach println
 
   val tweetSet5 = tweetSet4.filter(tweet => tweet.retweets > 9)
-  println("tweetSet5 results ******")
-  tweetSet5 foreach println
+  // println("tweetSet5 results ******")
+  // tweetSet5 foreach println
+  // println(tweetSet4.mostRetweeted)
+  // tweetSet4.descendingByRetweet foreach println
   // Print the trending tweets
   // GoogleVsApple.trending foreach println
+  println("\nGoogle Tweets")
+  GoogleVsApple.googleTweets foreach println
+  println("\nApple Tweets")
+  GoogleVsApple.appleTweets foreach println
 }
