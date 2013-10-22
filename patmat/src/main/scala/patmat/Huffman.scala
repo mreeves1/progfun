@@ -26,9 +26,15 @@ object Huffman {
 
   // Part 1: Basics
 
-  def weight(tree: CodeTree): Int = ??? // tree match ...
+  def weight(tree: CodeTree): Int = tree match {
+    case Fork(l, r, c, w) => w //weight(l) + weight(r) // don't need recursive solution...
+    case Leaf(c, w) => w
+  }
 
-  def chars(tree: CodeTree): List[Char] = ??? // tree match ...
+  def chars(tree: CodeTree): List[Char] = tree match {
+    case Fork(l, r, c, w) => c
+    case Leaf(c, w) => List(c)
+  }
 
   def makeCodeTree(left: CodeTree, right: CodeTree) =
     Fork(left, right, chars(left) ::: chars(right), weight(left) + weight(right))
@@ -71,7 +77,65 @@ object Huffman {
    *       println("integer is  : "+ theInt)
    *   }
    */
-  def times(chars: List[Char]): List[(Char, Int)] = ???
+
+  /* aborted attempt
+  def timesAcc(chars: List[Char], output: List[(Char, Int)]): List[(Char, Int)] = chars match {
+    case Nil => output
+    case x :: xs => {
+      val outputNew = List()
+      for (pair <- output) {
+        if (x == pair._1) {
+          //outputNew = List ::
+        }
+      }
+    }
+    
+  }
+  */
+  
+  def checkChar(char: Char, l1: List[(Char, Int)], l2: List[(Char, Int)]): List[(Char, Int)] = l1 match {
+    case Nil => l2
+    case x :: xs => {
+      if (char == x._1) {
+        println("found match for "+x._1)
+        (x._1, x._2 + 1) :: l2 // found match 
+      }
+      else {
+        println("no match found for "+x._1)
+        checkChar(char, xs, (x._1, x._2) :: l2)
+      }
+    }
+  }
+  
+  def times(chars: List[Char]): List[(Char, Int)] = chars match {
+    // timesAcc(chars, List())
+
+    case Nil => List()
+    case x :: xs => {
+      // init?
+      /*
+      checkChar(x, List((x, 0)), List())
+      times(xs)
+      */
+      println(x)
+      checkChar(x, times(xs), List((x, 1)))
+      
+      
+      
+    }
+    /*
+    for (c <- chars) {
+      checkChar(c, List((c, 0)), List())
+      
+    }
+    
+    */
+   
+    
+    
+    
+    
+  }
 
   /**
    * Returns a list of `Leaf` nodes for a given frequency table `freqs`.
@@ -203,4 +267,9 @@ object Huffman {
    * and then uses it to perform the actual encoding.
    */
   def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+}
+
+object Main extends App {
+    Huffman.times(List('a', 'b', 'a'))
+    Huffman.times(List('a', 'b', 'a', 'd', 'c', 'e', 'b'))
 }
